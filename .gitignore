@@ -1,0 +1,4 @@
+.idea
+docs/.vuepress/dist
+docs/.vuepress/dist.zip
+node_modules

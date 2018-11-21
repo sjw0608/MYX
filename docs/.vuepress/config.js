@@ -1,7 +1,7 @@
 module.exports = {
   base: '/docs/',
   title: 'About WEB',
-  description: '',
+  description: ' ',
   head: [],
   themeConfig: {
     sidebarDepth: 2, // e'b将同时提取markdown中h2 和 h3 标题，显示在侧边栏上。
@@ -18,10 +18,15 @@ module.exports = {
       {
         text: 'ECMAScript6',
         link: '/ECMAScript6/'
+      },
+      {
+        text: 'CDN',
+        link: '/CDN/'
       }
     ],
     sidebar: {
-      '/ECMAScript6/': genSidebarConfig('ECMAScript6', 'ECMAScript6')
+      '/ECMAScript6/': genSidebarConfig('ECMAScript6', 'ECMAScript6'),
+      '/CDN/': genSidebarConfig('CDN', 'CDN')
     }
   }
 }
@@ -33,6 +38,15 @@ function genSidebarConfig(module, title) {
         title,
         collapsable: false,
         children: ['', 'let', 'destructuring', 'proxy']
+      }
+    ]
+  }
+  if (module === 'CDN') {
+    return [
+      {
+        title,
+        collapsable: false,
+        children: ['']
       }
     ]
   }

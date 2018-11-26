@@ -16,6 +16,10 @@ module.exports = {
     },
     nav: [
       {
+        text: '前端整理',
+        link: '/前端整理/'
+      },
+      {
         text: 'ECMAScript6',
         link: '/ECMAScript6/'
       },
@@ -25,6 +29,7 @@ module.exports = {
       }
     ],
     sidebar: {
+      '/前端整理/': genSidebarConfig('前端整理', '前端整理'),
       '/ECMAScript6/': genSidebarConfig('ECMAScript6', 'ECMAScript6'),
       '/CDN/': genSidebarConfig('CDN', 'CDN')
     }
@@ -32,6 +37,15 @@ module.exports = {
 }
 
 function genSidebarConfig(module, title) {
+  if (module === '前端整理') {
+    return [
+      {
+        title,
+        collapsable: false,
+        children: ['', 'ifream']
+      }
+    ]
+  }
   if (module === 'ECMAScript6') {
     return [
       {

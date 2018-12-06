@@ -17,32 +17,27 @@ module.exports = {
     nav: [
       {
         text: '前端整理',
-        link: '/前端整理/'
+        link: '/AboutWeb/'
       },
       {
         text: 'ECMAScript6',
         link: '/ECMAScript6/'
-      },
-      {
-        text: 'CDN',
-        link: '/CDN/'
       }
     ],
     sidebar: {
-      '/前端整理/': genSidebarConfig('前端整理', '前端整理'),
-      '/ECMAScript6/': genSidebarConfig('ECMAScript6', 'ECMAScript6'),
-      '/CDN/': genSidebarConfig('CDN', 'CDN')
+      '/AboutWeb/': genSidebarConfig('AboutWeb', 'AboutWeb'),
+      '/ECMAScript6/': genSidebarConfig('ECMAScript6', 'ECMAScript6')
     }
   }
 }
 
 function genSidebarConfig(module, title) {
-  if (module === '前端整理') {
+  if (module === 'AboutWeb') {
     return [
       {
         title,
         collapsable: false,
-        children: ['', 'ifream']
+        children: ['', 'web', 'CDN']
       }
     ]
   }
@@ -52,15 +47,6 @@ function genSidebarConfig(module, title) {
         title,
         collapsable: false,
         children: ['', 'let', 'destructuring', 'proxy']
-      }
-    ]
-  }
-  if (module === 'CDN') {
-    return [
-      {
-        title,
-        collapsable: false,
-        children: ['']
       }
     ]
   }

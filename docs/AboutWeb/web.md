@@ -283,3 +283,197 @@ WebStorage 的目的是克服由 cookie 所带来的一些限制，当数据需�
 清空：localStorage.clear();​
 
 ```
+
+## 防抖/节流（debounce/throttling)
+
+**防抖和节流是针对响应跟不上触发频率这类问题的两种解决方案**。在给 DOM 绑定事件时，有些事件是我们无法控制触发频率的。如鼠标移动事件 `onmousemove`，滚动滚动条事件`onscroll`，窗口大小改变事件`onresize`,瞬间的操作都会导致这些事件的高频触发。**如果事件的回调函数较为复杂，就会导致响应跟不上触发，出现页面的卡顿，假死现象**。在实时检查输入时，如果我们绑定`onkeyup`事件发请求去服务端检查，用户输入过程中，事件的触发频率也会很高，会导致大量的请求发出，响应速度会大大跟不上触发。
+
+- **函数防抖**
+
+  - 1.什么是函数防抖
+    > **函数防抖(debounce)** :某个函数在上一次执行后，满足等待某个时间内不再触发此函数后再执行，而在这个等待时间内再次触发此函数，等待的时间会重新计算，直到该函数在一定间隔内没有被调用时，才开始执行被调用方法
+  - 2.应用场景
+    - 用户注册时手机号码验证/邮箱验证
+    - 搜索框（input）
+  - 3.通用写法
+
+    ```javascript
+    export const debounce = (interval, cb) => {
+      let timeout = null
+      return function() {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => cb.apply(this, arguments), interval)
+      }
+    }
+
+    //实例1
+    window.addEventLister(
+      'resize',
+      debounce(1000, () => {
+        window.location.reload()
+      })
+    )
+
+    //实例2
+    doResizeEffect = () => {
+      const fn = debounce(1000, () => {
+        const height = document.getElementsByClassName('stocks-commit-handicap')[0].clientHeight
+        const chartHeight = calBodyHeight() - 65 - 11
+        const dealHeight = chartHeight - height
+        this.setState({
+          chartHeight: chartHeight,
+          dealHeight: dealHeight
+        })
+      })
+      window.addEventListener('resize', fn)
+      return () => {
+        window.removeEventListener('resize', fn)
+      }
+    }
+    ```
+
+  - 4.举例
+    - 场景：站内有一个搜索框，用户输入文本我们会自动联想匹配一些结果给用户选择
+    - 方法：
+      - 监听 keypress 时间，异步查询结果
+      - 问题：用户快速的输入一连串的字符，假设是 10 个字符，那么就会瞬间触发 10 次请求 （不合理）
+    - 优解 ： 用户停止输入的时候才去触发查询的请求 （**函数防抖**）
+
+  ```javascript
+  //简单示例
+  window.addEventListener('resize', function(e) {
+    var t
+    return function() {
+      if (t) clearTimeout(t)
+      t = setTimeout(() => {
+        // do something...
+      }, 1000)
+    }
+  })
+
+  //函数防抖
+  var timer = false
+  document.getElementById('debounce').onscroll = function() {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      console.log('函数防抖')
+    }, 1000)
+  }
+  ```
+
+- **函数节流**
+
+  - 1.什么是函数节流
+    > **函数节流（throttle）**:让一个函数无法再短时间内连续调用。**即每隔某个时间去执行某函数，避免函数的过多执行，这个方式就是函数节流**
+  - 2.应用场景
+    - window 对象的 resize、scroll
+    - 拖拽时的 mousemove 事件
+    - 射击游戏中的 mousedown、keydown 事件
+    - 文字输入、自动完成的 keyup 事件
+  - 3.通用写法
+
+  ```javascript
+  // 函数节流
+  export const throttleFn = (interval, cb) => {
+    let oldDate = 0
+    return function() {
+      let newDate = new Date()
+      if (newDate - oldDate > interval) {
+        oldDate = newDate
+        return cb.apply(this, arguments)
+      }
+    }
+  }
+  // 用法示例——绑定按键
+  bindKey = table => {
+    // 节流时间间隔
+    let interval = 66
+    let throttleEvent = throttleFn(interval, e => {
+      const keyCode = e.keyCode
+      if (keyCode === 38) {
+        // up
+        this.upHandler(table)
+      }
+      if (keyCode === 40) {
+        // down
+        this.downHandler(table)
+      }
+      if (keyCode === 37) {
+        // left
+        this.leftHandler(table)
+      }
+      if (keyCode === 39) {
+        // right
+        this.rightHandler(table)
+      }
+      if (keyCode === 13) {
+        // enter
+        this.enterHandler(table)
+      }
+    })
+    window.onkeydown = e => {
+      e.preventDefault()
+      const keyCode = e.keyCode
+      throttleEvent(e)
+    }
+  }
+  ```
+
+- 4.举例
+
+  ```javascript
+  // 简单的节流函数
+  function throttle(func, wait, mustRun) {
+    var timeout,
+      startTime = new Date()
+
+    return function() {
+      var context = this,
+        args = arguments,
+        curTime = new Date()
+
+      clearTimeout(timeout)
+      // 如果达到了规定的触发时间间隔，触发 handler
+      if (curTime - startTime >= mustRun) {
+        func.apply(context, args)
+        startTime = curTime
+        // 没达到触发间隔，重新设定定时器
+      } else {
+        timeout = setTimeout(func, wait)
+      }
+    }
+  }
+  // 实际想绑定在 scroll 事件上的 handler
+  function realFunc() {
+    console.log('Success')
+  }
+  // 采用了节流函数
+  window.addEventListener('scroll', throttle(realFunc, 500, 1000))
+  ```
+
+## 页面优化方案
+
+> 在构建 DOM 结构，组织 CSS 选择器时，选择最优的写法，提高浏览器的解析速度。理解浏览器如何进行渲染，明白渲染过程，在设置元素属性，编写 js 文件时，可以减少‘重绘’‘重绘布局’的消耗。
+
+- 1、**减少资源请求的次数和压缩数据内容**
+  - ①、进行资源打包，将需要多次请求的资源进行打包减少资源请求次数，如 webpack 等
+  - ②、使用精灵图（雪碧图），避免因不同图片引起的多次资源下载
+- 2、**高效合理的 css 选择符可以减轻浏览器的解析负担**。
+  - css 是逆向解析的，所以应避免多层嵌套
+  - 避免使用通配规则 如 \*{}
+  - 尽量少的去对标签进行选择
+  - 不要用标签限定 ID 或者类选择符
+  - 尽量少的去使用后代选择器，降低选择器的权重。（后代选择器的开销最高，尽量讲选择器的深度降到最低，最高不要超过三层）
+- 3、**从 js 层面谈页面优化**
+  - **解决渲染阻塞** <br/>
+    在解析 HTML 标记时，浏览器遇到 JavaScript，解析会停止。只有在该脚本执行完毕后，HTML 渲染才会继续进行。<br/>
+    解决方法：**在标签中使用 async 或 defer 特性**
+  - **减少 DOM 的操作** <br/>
+    修改和访问 DOM 元素会造成页面的 Repaint 和 Reflow，循环对 DOM 操作更是罪恶的行为。所以请合理的使用 JavaScript 变量储存内容，考虑大量 DOM 元素中循环的性能开销，在循环结束时一次性写入。
+    减少对 DOM 元素的查询和修改，查询时可将其赋值给局部变量。
+  - **使用 JSON 格式来进行数据交换** <br/>
+    JSON 是一种轻量级的数据交换格式，采用完全独立于语言的文本格式，是理想的数据交换格式。同时，JSON 是 JavaScript 原生格式，这意味着在 JavaScript 中处理 JSON 数据不需要任何特殊的 API 或工具包
+  - **让需要经常改动的节点脱离文档流** <br/>
+    因为重绘有时确实不可避免，所以只能尽可能限制重绘的影响范围。
+- 4、[使用 CDN 加速（内容分发网络）](./CDN.md)
+- 5、**精简 CSS 和 JS 文件**

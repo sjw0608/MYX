@@ -530,9 +530,9 @@ new Person(c, c, c)
 - 3、通过 prototype 我们可以扩展 Javascript 的内建对象
 
 ```javascript
-function Memo() {};
-var m0 = new Memo();
-Memo.prototype.shut === m0.**proto**.shut
+function Memo() {}
+var m0 = new Memo()
+Memo.prototype.shut === m0.__proto__.shut
 ```
 
 实例上的`__proto__`就是指向原型上的 `prototype`，

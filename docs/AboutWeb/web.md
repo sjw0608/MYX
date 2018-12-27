@@ -477,3 +477,99 @@ WebStorage 的目的是克服由 cookie 所带来的一些限制，当数据需�
     因为重绘有时确实不可避免，所以只能尽可能限制重绘的影响范围。
 - 4、[使用 CDN 加速（内容分发网络）](./CDN.md)
 - 5、**精简 CSS 和 JS 文件**
+
+## 继承
+
+JS 的基本的设计模式：
+
+- 工厂模式：因为使用用一个接口创建很多对象会产生大量的重复代码,为了解决这个问题，人们就开始使用工厂模式：
+
+```javascript
+function Person(hairs, face, eye) {
+  var o = new Object()
+  o.hairs = hairs
+  o.face = face
+  o.eye = eye
+  o.say = function() {
+    console.log('say someting to me!')
+  }
+  return o
+}
+Person(c, c, c)
+```
+
+- 构造函数模式：使用构造函数模式我们能少些更多代码。
+
+```javascript
+function Person(hairs, face, eye) {
+  this.hairs = hairs
+  this.face = face
+  this.eye = eye
+}
+new Person(c, c, c)
+```
+
+工厂模式和构造函数模式有什么区别呢：
+
+- 没有显式地创建对象
+- 直接把属性和方法赋值给了 this
+- 没有 return 语句
+- 构造函数的前面有一个 new;
+- 通过 new 的构造函数会经过四个阶段：
+  - 1：创建一个新对象；
+  - 2：把 this 赋值给这个新对象
+  - 3：执行构造函数中的代码
+  - 4：返回新对象
+
+<br>
+
+什么是原型（原型就是公用的方法或者属性，这么理解最简单）：
+
+- 1、prototype 本质上还是一个 JavaScript 对象；
+- 2、每个函数都有一个默认的 prototype 属性；
+- 3、通过 prototype 我们可以扩展 Javascript 的内建对象
+
+```javascript
+function Memo() {};
+var m0 = new Memo();
+Memo.prototype.shut === m0.**proto**.shut
+```
+
+实例上的`__proto__`就是指向原型上的 `prototype`，
+`prototype` 和`__proto__`的区别：`__proto__`是实例和 `Person.prototype` 之间的关系
+<br>
+JS 的原型继承，继承是依赖于原型链的；那么 JS 原型链是什么呢：
+
+- `Object`是函数对象，是通过`new Function()`创建，所以`Object.__proto__`指向`Function.prototype`。
+
+```javascript
+Object.__proto__ === Function.prototype // true
+```
+
+- `Function` 也是对象函数，也是通过 `new Function()`创建，所以 `Function.__proto__`指向 `Function.prototype`。
+  自己是由自己创建的，好像不符合逻辑，但仔细想想，现实世界也有些类似，你是怎么来的，你妈生的，你妈怎么来的，你姥姥生的，……类人猿进化来的，那类人猿从哪来，一直追溯下去……，就是无，（NULL 生万物）
+  正如《道德经》里所说“无，名天地之始”。
+
+```javascript
+Function.__proto__ === Function.prototype // true
+```
+
+- ```javascript
+  Function.prototype.__proto__ === Object.prototype //true
+  ```
+
+:::warning 总结
+查找属性，如果本身没有，则会去`__proto__`中查找，也就是构造函数的显式原型中查找，如果构造函数中也没有该属性，因为构造函数也是对象，也有`__proto__`，那么会去它的显式原型中查找，一直到 `null`，如果没有则返回 `undefined`
+:::
+
+## Vue（watch 和 computed）的区别
+
+- computed（计算属性）
+  - 计算属性计算时所依赖的属性一定是响应式依赖，否则计算属性不会执行
+  - 计算属性是基于依赖进行缓存的，就是说在依赖没有更新的情况，调用计算属性并不会重新计算，可以减少开销
+  - 应用场景（计算属性）：
+    - 复杂的渲染数据计算，用 `computed` 计算属性可以减少一定计算开销，增加可维护性
+    - 从 `Vuex Store`中收集相关信息，对`Vuex` 中的数据做计算的时候的要特别注意 `computed` 的缓存属性，在对 `Vuex` 中的对象值进行属性修改的时候，并不会触发 `computed` 的中值的变化，这时需要 `Object.assign({},obj)`对依赖对象进行跟新返回一个新对象触发依赖跟新
+    - 表单校验，这个应用场景应该是比较常见的，利用正则表达式对每个表单项的实时监控，判断表单是否可以提交
+- watch （监听属性）
+  - 侦听属性是专门用来观察和响应 `vue` 实例上的数据变动，当执行异步操作的时候你可能就必须用 `watch`

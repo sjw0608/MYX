@@ -37,7 +37,7 @@ function genSidebarConfig(module, title) {
       {
         title,
         collapsable: false,
-        children: ['', 'web', 'CDN']
+        children: ['', 'web', 'CDN', 'urlStep']
       }
     ]
   }

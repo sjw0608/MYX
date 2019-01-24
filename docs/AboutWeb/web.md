@@ -283,6 +283,83 @@ WebStorage 的目的是克服由 cookie 所带来的一些限制，当数据需�
 清空：localStorage.clear();​
 
 ```
+:::warning 注意
+  一般项目中可以使用原生[js store.js包](https://github.com/marcuswestin/store.js)
+:::
+```javascript
+  //使用方法：
+    store.set('', '')//存
+    store.get('')//取
+    store.remove('')//移除
+    store.clear();//清除全部
+```
+::: warning 注意
+  - **get封装**
+  ```javascrtpt
+      get(key){
+          let result = store.get(compile(key))?uncompile(store.get(compile(key))):'';
+          try {
+              result = $.parseJSON(result);
+          }catch (e){}
+          return result;
+      }
+  ```
+  - **set封装**
+  ```javascript
+    set(key, value){
+        if(!isString(value) && !isNumber(value)){
+            value = JSON.stringify(value);
+        }
+        store.set(compile(key), compile(value));
+    }
+  ```
+  - **remove封装**
+    ```javascript
+      remove(key){
+          store.remove(compile(key));
+      }
+    ```
+  - `code` **要加密的字符串**
+    ```javascript
+      function compile(code){
+        code = code + '';
+        let c = String.fromCharCode(code.charCodeAt(0)+code.length);
+        for(let i = 1;i < code.length;i++){
+            c += String.fromCharCode(code.charCodeAt(i)+code.charCodeAt(i-1));
+        }
+        return escape(c);
+      }
+    ```
+  - `code` **要解密的字符串**
+  ```javascript
+    function uncompile(code){
+      code = code + '';
+      code=unescape(code);
+      let c=String.fromCharCode(code.charCodeAt(0)-code.length);
+      for(let i=1;i<code.length;i++){
+          c+=String.fromCharCode(code.charCodeAt(i)-c.charCodeAt(i-1));
+      }
+      return c;
+    }
+  ```
+  - `isString` 和 `isNumber` 的封装
+    ```javascript
+      // 获取变量类型
+      getType(obj) {
+          return Object.prototype.toString.call(obj);
+      }
+      // 判断变量是否为String对象
+      isString(str) {
+          return this.getType(str) === '[object String]';
+      }
+      // 判断变量是否为Number对象
+      isNumber(num) {
+          return this.getType(num) === '[object Number]';
+      }
+    ```
+:::
+
+
 
 ## 防抖/节流（debounce/throttling)
 
@@ -575,34 +652,6 @@ Function.__proto__ === Function.prototype // true
   - 侦听属性是专门用来观察和响应 `vue` 实例上的数据变动，当执行异步操作的时候你可能就必须用 `watch`
 
 
-## Vue-Bus的用法（已知两种）:
-
-- 用法：（1）在实际运用中，一般将Bus抽离出来:
-```javascript
-import Vue from 'vue'
-const Bus = new Vue()
-export default Bus
-```
-:::warning 总结
-但这种引入方式，经过webpack打包后可能会出现Bus局部作用域的情况，即引用的是两个不同的Bus，导致不能正常通信
-:::
-- 用法：（2）当然也可以直接将Bus注入到Vue根对象中：
-```javascript
-  import Vue from 'vue'
-    const Bus = new Vue()
-    var app= new Vue({
-        el:'#app',
-    　　 data:{
-    　　　　Bus
-        }　　
-    })
-```
-- 在组件中通过:
-```javascript
-  this.$root.Bus.$on()//监听
-  this.$root.Bus.$emit()//触发
-```
-
 ## VueX的用法
 - 什么是Vuex？
   - Vuex是一个状态管理工具，它采用集中式存储管理应用的所有组件的状态。 
@@ -662,12 +711,27 @@ export default Bus
         export defalut xx2//导出
 ```
 :::warning 注意
-  中小型项目可以使用原生[js store.js包](https://github.com/marcuswestin/store.js)
+  中小型项目可以使用Vue-Bus
 :::
 - 使用方法：
 ```javascript
-  store.set('', '')//存
-  store.get('')//取
-  store.remove('')//移除
-  store.clear();//清除全部
+  //第一种用法:在实际运用中，一般将Bus抽离出来
+  import Vue from 'vue'
+    const Bus = new Vue()
+    export default Bus
+```
+:::warning 注意
+  但这种引入方式，经过webpack打包后可能会出现Bus局部作用域的情况，即引用的是两个不同的Bus，导致不能正常通信
+:::
+```javascript
+  //第二种方法:当然也可以直接将Bus注入到Vue根对象中
+  import Vue from 'vue'
+    const Bus = new Vue()
+    var app= new Vue({
+        el:'#app',
+    　　 data:{
+    　　　　Bus
+        }　　
+    })
+    在子组件中通过this.$root.Bus.$on(),this.$root.Bus.$emit()来调用
 ```

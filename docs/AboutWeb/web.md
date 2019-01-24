@@ -206,6 +206,7 @@ runAsync().then(function(data) {
 - **存储的大小：** `cookie`：单个 cookie 保存的数据不能超过 4kb；`session` 大小没有限制。
 - **安全性：** `cookie`：针对 cookie 所存在的攻击：Cookie 欺骗，Cookie 截获；`session` 的安全性大于 cookie
   <br/>
+
   **原因如下：**
 
   - sessionID 存储在 cookie 中，若要攻破 session 首先要攻破 cookie；
@@ -574,41 +575,48 @@ Function.__proto__ === Function.prototype // true
 - watch （监听属性）
   - 侦听属性是专门用来观察和响应 `vue` 实例上的数据变动，当执行异步操作的时候你可能就必须用 `watch`
 
+## Vue-Bus 的用法（已知两种）:
 
-## Vue-Bus的用法（已知两种）:
+- 用法：（1）在实际运用中，一般将 Bus 抽离出来:
 
-- 用法：（1）在实际运用中，一般将Bus抽离出来:
 ```javascript
 import Vue from 'vue'
 const Bus = new Vue()
 export default Bus
 ```
+
 :::warning 总结
-但这种引入方式，经过webpack打包后可能会出现Bus局部作用域的情况，即引用的是两个不同的Bus，导致不能正常通信
+但这种引入方式，经过 webpack 打包后可能会出现 Bus 局部作用域的情况，即引用的是两个不同的 Bus，导致不能正常通信
 :::
-- 用法：（2）当然也可以直接将Bus注入到Vue根对象中：
+
+- 用法：（2）当然也可以直接将 Bus 注入到 Vue 根对象中：
+
 ```javascript
-  import Vue from 'vue'
-    const Bus = new Vue()
-    var app= new Vue({
-        el:'#app',
-    　　 data:{
-    　　　　Bus
-        }　　
-    })
-```
-- 在组件中通过:
-```javascript
-  this.$root.Bus.$on()//监听
-  this.$root.Bus.$emit()//触发
+import Vue from 'vue'
+const Bus = new Vue()
+var app = new Vue({
+  el: '#app',
+  data: {
+    Bus
+  }
+})
 ```
 
-## VueX的用法
-- 什么是Vuex？
-  - Vuex是一个状态管理工具，它采用集中式存储管理应用的所有组件的状态。 
-- 用法（1）：Vuex模块化：
+- 在组件中通过:
+
 ```javascript
-  //Vuex 允许我们将 store 分割成模块（module） 
+this.$root.Bus.$on() //监听
+this.$root.Bus.$emit() //触发
+```
+
+## VueX 的用法
+
+- 什么是 Vuex？
+  - Vuex 是一个状态管理工具，它采用集中式存储管理应用的所有组件的状态。
+- 用法（1）：Vuex 模块化：
+
+```javascript
+  //Vuex 允许我们将 store 分割成模块（module）
   import xx from './xx'
         import Vue from 'vue'
         import Vuex from 'vuex'
@@ -628,7 +636,9 @@ export default Bus
             }
       export default message//导出模块
 ```
+
 - 用法（2）：
+
 ```javascript
       //在文件夹下建Index.js文件
       import actions from './actions'
@@ -646,7 +656,7 @@ export default Bus
                 fun({commit}){
                     commit('fun1') //触发sidebar开启和隐藏
                 }
-            }; 
+            };
         export defalut configAction//导出
         //mutations文件夹：
             let xx1 = {
@@ -661,13 +671,16 @@ export default Bus
             }
         export defalut xx2//导出
 ```
+
 :::warning 注意
-  中小型项目可以使用原生[js store.js包](https://github.com/marcuswestin/store.js)
+中小型项目可以使用原生[js store.js 包](https://github.com/marcuswestin/store.js)
 :::
+
 - 使用方法：
+
 ```javascript
-  store.set('', '')//存
-  store.get('')//取
-  store.remove('')//移除
-  store.clear();//清除全部
+store.set('', '') //存
+store.get('') //取
+store.remove('') //移除
+store.clear() //清除全部
 ```

@@ -22,11 +22,16 @@ module.exports = {
       {
         text: 'ECMAScript6',
         link: '/ECMAScript6/'
+      },
+      {
+        text: '微信小程序',
+        link: '/miniprogram/'
       }
     ],
     sidebar: {
       '/AboutWeb/': genSidebarConfig('AboutWeb', 'AboutWeb'),
-      '/ECMAScript6/': genSidebarConfig('ECMAScript6', 'ECMAScript6')
+      '/ECMAScript6/': genSidebarConfig('ECMAScript6', 'ECMAScript6'),
+      '/miniprogram/': genSidebarConfig('miniprogram', 'miniprogram')
     }
   }
 }
@@ -47,6 +52,15 @@ function genSidebarConfig(module, title) {
         title,
         collapsable: false,
         children: ['', 'let', 'destructuring', 'proxy']
+      }
+    ]
+  }
+  if (module === 'miniprogram') {
+    return [
+      {
+        title,
+        collapsable: false,
+        children: ['']
       }
     ]
   }

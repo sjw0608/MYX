@@ -647,8 +647,6 @@ Function.__proto__ === Function.prototype // true
 - watch （监听属性）
   - 侦听属性是专门用来观察和响应 `vue` 实例上的数据变动，当执行异步操作的时候你可能就必须用 `watch`
 
-## Vue-Bus 的用法（已知两种）:
-
 ## VueX 的用法
 
 - 什么是 Vuex？

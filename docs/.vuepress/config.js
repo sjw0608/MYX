@@ -14,8 +14,7 @@ module.exports = {
         buttonText: '刷新'
       }
     },
-    nav: [
-      {
+    nav: [{
         text: '前端整理',
         link: '/AboutWeb/'
       },
@@ -38,30 +37,24 @@ module.exports = {
 
 function genSidebarConfig(module, title) {
   if (module === 'AboutWeb') {
-    return [
-      {
-        title,
-        collapsable: false,
-        children: ['', 'web', 'CDN', 'urlStep']
-      }
-    ]
+    return [{
+      title,
+      collapsable: false,
+      children: ['', 'web', 'CDN', 'urlStep', 'plug']
+    }]
   }
   if (module === 'ECMAScript6') {
-    return [
-      {
-        title,
-        collapsable: false,
-        children: ['', 'let', 'destructuring', 'proxy']
-      }
-    ]
+    return [{
+      title,
+      collapsable: false,
+      children: ['', 'let', 'destructuring', 'proxy']
+    }]
   }
   if (module === 'miniprogram') {
-    return [
-      {
-        title,
-        collapsable: false,
-        children: ['']
-      }
-    ]
+    return [{
+      title,
+      collapsable: false,
+      children: ['']
+    }]
   }
 }

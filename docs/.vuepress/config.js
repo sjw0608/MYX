@@ -25,12 +25,17 @@ module.exports = {
       {
         text: '微信小程序',
         link: '/miniprogram/'
+      },
+      {
+        text: '面试',
+        link: '/前端整理/'
       }
     ],
     sidebar: {
       '/AboutWeb/': genSidebarConfig('AboutWeb', 'AboutWeb'),
       '/ECMAScript6/': genSidebarConfig('ECMAScript6', 'ECMAScript6'),
-      '/miniprogram/': genSidebarConfig('miniprogram', 'miniprogram')
+      '/miniprogram/': genSidebarConfig('miniprogram', 'miniprogram'),
+      '/前端整理/': genSidebarConfig('前端整理', '前端整理')
     }
   }
 }
@@ -51,6 +56,13 @@ function genSidebarConfig(module, title) {
     }]
   }
   if (module === 'miniprogram') {
+    return [{
+      title,
+      collapsable: false,
+      children: ['']
+    }]
+  }
+  if (module === '前端整理') {
     return [{
       title,
       collapsable: false,

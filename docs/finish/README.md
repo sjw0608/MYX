@@ -49,7 +49,17 @@
 
 ### `原型链`
 
-它是一种查找机制，实例首先在自己的私有属性中进行属性的查找，如果不在私有属性，基于`__proto__`向所属的原型上查找，如果在找不到，则继续基于`__proto__`向上查找，一直找到 `Object.prototype` 为止。例如：`obj.hasOwnProperty()`这里调取的`hasOwnProperty`这个属性就是找到`Object.prototype`才找到的
+- 所有的函数数据类型都天生自带一个属性：`prototype`（原型），这个属性的值是一个对象，浏览器会默认给他开辟一个堆内存
+- 在浏览器给 `prototype` 开辟的堆内存当中有一个天生自带的属性：constructor，这个属性存储的值是当前函数本身
+- 每一个对象都有一个`__proto__`的属性,这个属性指向当前实例所属类的`prototype`(如果不能确定他是谁的实例，都是 object 的实例)
+  每个类都把供实例调取的公共属性方法，存储到自己的原型上（原型 prototype 的作用就是存储一些公共的属性和方法，供他的实例调取使用）
+  基类 Object 的原型上的`__proto__`指向 null，因为到最底层类，如果要指向也是指向自己本身，没意义
+
+::: warning 原型链
+原型链：它是一种基于`__proto__`向上查找的机制。当我们操作实例的某个属性或者方法的时候，首先找自己空间中私有的属性或者方法， 1.找到了，则结束查找，使用自己的私有的即可 2.没有找到,则基于`__proto__`找所属类的 prototype,如果找到就用这个共有的，如果没找到基于原型上的`__proto__`继续向上查找，一直找到 Object.prototype 的原型为止，如果再没有，操作的属性或者方法不存在
+:::
+
+<!-- 它是一种查找机制，实例首先在自己的私有属性中进行属性的查找，如果不在私有属性，基于`__proto__`向所属的原型上查找，如果在找不到，则继续基于`__proto__`向上查找，一直找到 `Object.prototype` 为止。例如：`obj.hasOwnProperty()`这里调取的`hasOwnProperty`这个属性就是找到`Object.prototype`才找到的 -->
 
 ## 数组去重
 
@@ -230,4 +240,39 @@ ary.slice(1).forEach(item => {
 Math.max.apply(null, ary)
 // 4. 基于es6展开运算符
 Math.max(...ary)
+```
+
+## 阿里一道经典面试题
+
+```javascript
+function Foo() {
+  getName = function() {
+    console.log(1)
+  }
+  return this
+}
+
+Foo.getName = function() {
+  console.log(2)
+}
+
+Foo.prototype.getName = function() {
+  console.log(3)
+}
+
+var getName = function() {
+  console.log(4)
+}
+
+function getName() {
+  console.log(5)
+}
+
+Foo.getName() //2
+getName() // 4
+Foo().getName() // 1
+getName() // 1
+new Foo.getName() // 2
+new Foo().getName() // 3
+new new Foo().getName() //3
 ```

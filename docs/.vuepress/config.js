@@ -27,15 +27,15 @@ module.exports = {
         link: '/miniprogram/'
       },
       {
-        text: '面试',
-        link: '/前端整理/'
+        text: '总结&封装',
+        link: '/finish/'
       }
     ],
     sidebar: {
       '/AboutWeb/': genSidebarConfig('AboutWeb', 'AboutWeb'),
       '/ECMAScript6/': genSidebarConfig('ECMAScript6', 'ECMAScript6'),
       '/miniprogram/': genSidebarConfig('miniprogram', 'miniprogram'),
-      '/前端整理/': genSidebarConfig('前端整理', '前端整理')
+      '/finish/': genSidebarConfig('finish', 'finish')
     }
   }
 }
@@ -62,11 +62,11 @@ function genSidebarConfig(module, title) {
       children: ['']
     }]
   }
-  if (module === '前端整理') {
+  if (module === 'finish') {
     return [{
       title,
       collapsable: false,
-      children: ['']
+      children: ['', 'ajax']
     }]
   }
 }

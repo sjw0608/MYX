@@ -276,3 +276,7 @@ new Foo.getName() // 2
 new Foo().getName() // 3
 new new Foo().getName() //3
 ```
+
+## 一些基于 JQ 的页面
+
+- [红包雨](https://sjw0608.github.io/hongbaoyu/)
